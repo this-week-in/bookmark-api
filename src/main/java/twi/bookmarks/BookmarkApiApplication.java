@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -33,6 +36,15 @@ public class BookmarkApiApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BookmarkApiApplication.class, args);
+    }
+
+    @Bean
+    ApplicationRunner debugRunner(Environment environment) {
+        return args -> {
+            var log = LoggerFactory.getLogger(getClass());
+            for (var p : "url,password,username".split(","))
+                log.info(environment.getProperty("spring.datasource." + p));
+        };
     }
 
 }
