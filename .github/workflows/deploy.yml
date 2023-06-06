@@ -42,6 +42,11 @@ jobs:
           gcloud config set project $GCLOUD_PROJECT 
           gcloud --quiet auth configure-docker
           kubectl get pods
-
+      
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: 17
+          
       - name: Deploy
         run: cd $GITHUB_WORKSPACE/.github/workflows ; ./deploy.sh
