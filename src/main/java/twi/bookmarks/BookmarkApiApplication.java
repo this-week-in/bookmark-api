@@ -43,24 +43,31 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 public class BookmarkApiApplication {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     public static void main(String[] args) {
         SpringApplication.run(BookmarkApiApplication.class, args);
     }
 
     @Bean
-    ApplicationRunner health () {
+    ApplicationRunner health() {
         return args -> {
             var tmp = new File("/tmp/");
-            try (var out = new FileWriter(new File(tmp, "health"))) {
-                FileCopyUtils.copy("initialized @ " + Instant.now(), out);
+            var health = new File(tmp, "health");
+            try (var out = new FileWriter(health)) {
+                var message = "initialized @ " + Instant.now();
+                tmp.mkdirs();
+                FileCopyUtils.copy(message, out);
+                log.info(message + "::" +  health.exists());
             }
         };
     }
 
+
     @Bean
     InitializingBean debuggingApplicationRunner(Environment environment) {
         return () -> {
-            var log = LoggerFactory.getLogger(getClass());
+
             if (log.isDebugEnabled()) {
                 System.getenv().forEach((k, v) -> log.debug(k + '=' + v));
                 log.debug("------------");
