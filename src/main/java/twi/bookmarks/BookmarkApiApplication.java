@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,10 +28,14 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.Array;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,18 +47,15 @@ public class BookmarkApiApplication {
         SpringApplication.run(BookmarkApiApplication.class, args);
     }
 
-    // todo does this break anything?
-/*    @Bean
-    @Order(2)
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
-                        .anyRequest().authenticated()
-                );
-
-        return http.build();
-    }*/
+    @Bean
+    ApplicationRunner health () {
+        return args -> {
+            var tmp = new File("/tmp/");
+            try (var out = new FileWriter(new File(tmp, "health"))) {
+                FileCopyUtils.copy("initialized @ " + Instant.now(), out);
+            }
+        };
+    }
 
     @Bean
     InitializingBean debuggingApplicationRunner(Environment environment) {
