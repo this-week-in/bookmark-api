@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +39,11 @@ public class BookmarkApiApplication {
     }
 
     @Bean
-    ApplicationRunner debugRunner(Environment environment) {
-        return args -> {
+    InitializingBean debuggingApplicationRunner(Environment environment) {
+        return () -> {
             var log = LoggerFactory.getLogger(getClass());
+            System.getenv().forEach((k, v) -> log.info(k + '=' + v));
+            log.info("------------");
             for (var p : "url,password,username".split(","))
                 log.info(environment.getProperty("spring.datasource." + p));
         };
