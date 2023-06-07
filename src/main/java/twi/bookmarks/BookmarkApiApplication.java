@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -60,10 +59,12 @@ public class BookmarkApiApplication {
     InitializingBean debuggingApplicationRunner(Environment environment) {
         return () -> {
             var log = LoggerFactory.getLogger(getClass());
-            System.getenv().forEach((k, v) -> log.info(k + '=' + v));
-            log.info("------------");
-            for (var p : "url,password,username".split(","))
-                log.info(environment.getProperty("spring.datasource." + p));
+            if (log.isDebugEnabled()) {
+                System.getenv().forEach((k, v) -> log.debug(k + '=' + v));
+                log.debug("------------");
+                for (var p : "url,password,username".split(","))
+                    log.debug(environment.getProperty("spring.datasource." + p));
+            }
         };
     }
 
