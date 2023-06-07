@@ -43,7 +43,7 @@ public class BookmarkApiApplication {
     }
 
     // todo does this break anything?
-    @Bean
+/*    @Bean
     @Order(2)
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -53,7 +53,7 @@ public class BookmarkApiApplication {
                 );
 
         return http.build();
-    }
+    }*/
 
     @Bean
     InitializingBean debuggingApplicationRunner(Environment environment) {
