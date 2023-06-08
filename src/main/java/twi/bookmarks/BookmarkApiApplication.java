@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
@@ -18,20 +18,19 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.sql.Array;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,32 +44,17 @@ public class BookmarkApiApplication {
         SpringApplication.run(BookmarkApiApplication.class, args);
     }
 
-    @Bean
-    ApplicationRunner health() {
-        return args -> {
-            var tmp = new File("/tmp/");
-            var health = new File(tmp, "health");
-            try (var out = new FileWriter(health)) {
-                var message = "initialized @ " + Instant.now();
-                tmp.mkdirs();
-                FileCopyUtils.copy(message, out);
-                log.info(message + "::" +  health.exists());
-            }
-        };
-    }
-
 
     @Bean
-    InitializingBean debuggingApplicationRunner(Environment environment) {
-        return () -> {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
 
-            if (log.isDebugEnabled()) {
-                System.getenv().forEach((k, v) -> log.debug(k + '=' + v));
-                log.debug("------------");
-                for (var p : "url,password,username".split(","))
-                    log.debug(environment.getProperty("spring.datasource." + p));
-            }
-        };
+        return http.build();
     }
 
 }
