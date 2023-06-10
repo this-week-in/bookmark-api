@@ -51,8 +51,8 @@ public class BookmarkApiApplication {
 
         @Override
         public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-             hints.reflection().registerType(
-                     com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
+            hints.reflection().registerType(
+                    com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
         }
     }
 
@@ -71,7 +71,7 @@ public class BookmarkApiApplication {
 
     @Bean
     ApplicationRunner debugEnv() {
-        return args -> System.getenv().forEach((k, v) -> log.info( '\t'+k + '=' + v));
+        return args -> System.getenv().forEach((k, v) -> log.info('\t' + k + '=' + v));
     }
 
 }
@@ -90,7 +90,7 @@ class MeController {
 record Bookmark(
         int bookmarkId, String href, String description, String extended, String hash, String meta,
         java.util.Date time,
-        String[] tags, Date edited) {
+        String[] tags, java.util.Date edited) {
 }
 
 
@@ -110,9 +110,9 @@ class BookmarkService {
                     rs.getString("extended"),
                     rs.getString("hash"),
                     rs.getString("meta"),
-                    new java.util.Date ((rs.getDate("time").getTime())),
+                    new java.util.Date((rs.getDate("time").getTime())),
                     tagsFromArray(rs.getArray("tags")),
-                    rs.getDate("edited"));
+                    new java.util.Date(rs.getDate("edited").getTime()));
 
     private static String[] tagsFromArray(Array a) {
         try {
