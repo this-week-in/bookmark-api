@@ -52,7 +52,7 @@ public class BookmarkApiApplication {
         @Override
         public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
              hints.reflection().registerType(
-                     com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class)
+                     com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
         }
     }
 
@@ -110,7 +110,7 @@ class BookmarkService {
                     rs.getString("extended"),
                     rs.getString("hash"),
                     rs.getString("meta"),
-                    new java.util.Date ((rs.getDate("time").getTime()),
+                    new java.util.Date ((rs.getDate("time").getTime())),
                     tagsFromArray(rs.getArray("tags")),
                     rs.getDate("edited"));
 
