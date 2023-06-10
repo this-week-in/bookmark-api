@@ -119,6 +119,7 @@ class BookmarkService {
     }
 
     private static String[] tagsFromArray(Array a) {
+        if (null == a) return null ;
         try {
             var o = a.getArray();
             if (o instanceof String[] sa) {
