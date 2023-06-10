@@ -109,16 +109,16 @@ class BookmarkService {
                     rs.getString("extended"),
                     rs.getString("hash"),
                     rs.getString("meta"),
-                    getDateFrom(rs.getDate("time")),//
-                    tagsFromArray(rs.getArray("tags")),//
-                    getDateFrom(rs.getDate("edited"))//
+                    getDateFromSqlDate(rs.getDate("time")),//
+                    getTagsFromArray(rs.getArray("tags")),//
+                    getDateFromSqlDate(rs.getDate("edited"))//
             );
 
-    private static java.util.Date getDateFrom(java.sql.Date d) {
+    private static java.util.Date getDateFromSqlDate(java.sql.Date d) {
         return (d == null) ? null : new java.util.Date(d.getTime());
     }
 
-    private static String[] tagsFromArray(Array a) {
+    private static String[] getTagsFromArray(Array a) {
         if (null == a) return null ;
         try {
             var o = a.getArray();
