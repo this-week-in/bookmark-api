@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
-import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -110,9 +109,14 @@ class BookmarkService {
                     rs.getString("extended"),
                     rs.getString("hash"),
                     rs.getString("meta"),
-                    new java.util.Date((rs.getDate("time").getTime())),
-                    tagsFromArray(rs.getArray("tags")),
-                    new java.util.Date(rs.getDate("edited").getTime()));
+                    getDateFrom(rs.getDate("time")),//
+                    tagsFromArray(rs.getArray("tags")),//
+                    getDateFrom(rs.getDate("edited"))//
+            );
+
+    private static java.util.Date getDateFrom(java.sql.Date d) {
+        return (d == null) ? null : new java.util.Date(d.getTime());
+    }
 
     private static String[] tagsFromArray(Array a) {
         try {
