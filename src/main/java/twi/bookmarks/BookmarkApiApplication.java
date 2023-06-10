@@ -5,11 +5,14 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aot.hint.RuntimeHints;
+import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ImportRuntimeHints;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -33,6 +36,7 @@ import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ImportRuntimeHints(BookmarkApiApplication.Hints.class)
 @EnableMethodSecurity
 @SpringBootApplication
 public class BookmarkApiApplication {
@@ -43,6 +47,14 @@ public class BookmarkApiApplication {
         SpringApplication.run(BookmarkApiApplication.class, args);
     }
 
+    static class Hints implements RuntimeHintsRegistrar {
+
+        @Override
+        public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
+             hints.reflection().registerType(
+                     com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class)
+        }
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -76,7 +88,8 @@ class MeController {
 
 
 record Bookmark(
-        int bookmarkId, String href, String description, String extended, String hash, String meta, Date time,
+        int bookmarkId, String href, String description, String extended, String hash, String meta,
+        java.util.Date time,
         String[] tags, Date edited) {
 }
 
@@ -97,7 +110,7 @@ class BookmarkService {
                     rs.getString("extended"),
                     rs.getString("hash"),
                     rs.getString("meta"),
-                    (rs.getDate("time")),
+                    new java.util.Date ((rs.getDate("time").getTime()),
                     tagsFromArray(rs.getArray("tags")),
                     rs.getDate("edited"));
 
