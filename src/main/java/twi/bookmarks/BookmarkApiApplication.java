@@ -51,8 +51,8 @@ public class BookmarkApiApplication {
 
         @Override
         public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-            hints.reflection().registerType(
-                    com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
+//            hints.reflection().registerType(
+//                    com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
         }
     }
 
@@ -69,10 +69,10 @@ public class BookmarkApiApplication {
     }
 
 
-    @Bean
-    ApplicationRunner debugEnv() {
-        return args -> System.getenv().forEach((k, v) -> log.info('\t' + k + '=' + v));
-    }
+//    @Bean
+//    ApplicationRunner debugEnv() {
+//        return args -> System.getenv().forEach((k, v) -> log.info('\t' + k + '=' + v));
+//    }
 
 }
 
