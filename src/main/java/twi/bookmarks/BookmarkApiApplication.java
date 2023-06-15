@@ -3,6 +3,7 @@ package twi.bookmarks;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aot.hint.RuntimeHints;
@@ -35,24 +36,19 @@ import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@ImportRuntimeHints(BookmarkApiApplication.Hints.class)
+/**
+ * Manage bookmarks ingested into the
+ *
+ * @author Josh Long
+ */
+@Slf4j
 @EnableMethodSecurity
 @SpringBootApplication
 public class BookmarkApiApplication {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public static void main(String[] args) {
         SpringApplication.run(BookmarkApiApplication.class, args);
-    }
-
-    static class Hints implements RuntimeHintsRegistrar {
-
-        @Override
-        public void registerHints(RuntimeHints hints, ClassLoader classLoader) {
-//            hints.reflection().registerType(
-//                    com.fasterxml.jackson.databind.ser.std.SqlDateSerializer.class);
-        }
     }
 
     @Bean
@@ -66,12 +62,6 @@ public class BookmarkApiApplication {
 
         return http.build();
     }
-
-
-//    @Bean
-//    ApplicationRunner debugEnv() {
-//        return args -> System.getenv().forEach((k, v) -> log.info('\t' + k + '=' + v));
-//    }
 
 }
 
