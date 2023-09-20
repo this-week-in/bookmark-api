@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Manage bookmarks ingested into the
+ * Manage bookmarks
  *
  * @author Josh Long
  */
