@@ -61,7 +61,7 @@ public class BookmarkApiApplication {
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer(Customizer.withDefaults());
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
